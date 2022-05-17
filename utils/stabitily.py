@@ -1,10 +1,11 @@
+"""Source: https://github.com/nogueirs/JMLR2018"""
 from typing import Union
 
 import numpy as np
 
 
 def check_input(Z):
-    """ Checks that Z is of the right type and dimension."""
+    """Checks that Z is of the right type and dimension."""
     ### We check that Z is a list or a numpy.array
     if isinstance(Z, list):
         Z = np.asarray(Z)
