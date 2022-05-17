@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def detect_anomalies(ts: pd.Series, visualize: bool = False) -> np.ndarray:
+def detect_anomalies(ts: pd.Series, visualize: bool = False) -> pd.Series:
     """
     Detects anomalies in time series.
     """
@@ -15,15 +15,15 @@ def detect_anomalies(ts: pd.Series, visualize: bool = False) -> np.ndarray:
     anomaly_score = (ts - mean) / std
 
     # Find the anomaly indices.
-    anomaly_indices = anomaly_score[anomaly_score > anomaly_score.quantile(0.99)].index
+    anomaly_indices = anomaly_score[anomaly_score > anomaly_score.quantile(0.98)].index
     anomaly_indices = np.append(
-        anomaly_indices, anomaly_score[anomaly_score < anomaly_score.quantile(0.01)].index
+        anomaly_indices, anomaly_score[anomaly_score < anomaly_score.quantile(0.02)].index
     )
 
     # Visualize the anomaly indices.
     if visualize:
-        plt.figure(figsize=(7, 3))
+        plt.figure(figsize=(10, 5))
         plt.plot(ts)
         plt.plot(anomaly_indices, ts.loc[anomaly_indices], "o", color="red")
         plt.show()
-    return anomaly_indices
+    return pd.Series(anomaly_indices)

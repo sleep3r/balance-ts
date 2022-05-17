@@ -64,7 +64,7 @@ def select_features(extracted_features: pd.DataFrame, target: pd.Series) -> Dict
     }
 
     res = {}
-    for method, estimator in {**wrapper_methods, **filter_methods, **embedded_methods}.items():
+    for method, estimator in {**filter_methods, **wrapper_methods, **embedded_methods}.items():
         estimator.fit(extracted_features.values, target.values)
         selected_features = estimator.get_support()
         res[method] = selected_features
