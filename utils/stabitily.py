@@ -1,3 +1,5 @@
+from typing import Union
+
 import numpy as np
 
 
@@ -14,7 +16,7 @@ def check_input(Z):
     return Z
 
 
-def nogueira(Z: np.ndarray) -> float:
+def nogueira(Z: Union[list, np.ndarray]) -> float:
     """
     Let us assume we have M>1 feature sets and d>0 features in total.
     This function computes the stability estimate as given in Definition 4 in  [1].
@@ -26,6 +28,11 @@ def nogueira(Z: np.ndarray) -> float:
 
     Returns:
         float: Stability of the feature selection procedure
+
+    >>>nogueira([[1, 1, 0], [1, 1, 0], [1, 1, 0]])
+    1.0
+    >>>nogueira([[1, 1, 0], [0, 1, 1], [1, 0, 1]])
+    -0.5
     """
     Z = check_input(Z)
     M, d = Z.shape
