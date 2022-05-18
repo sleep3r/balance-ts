@@ -1,14 +1,18 @@
+import warnings
 from typing import Dict
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 from mufs import MUFS
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.feature_selection import SelectFromModel, mutual_info_classif as MIC, RFECV
 from sklearn.linear_model import LinearRegression, Lasso
-from tqdm import tqdm
+from lightgbm import LGBMRegressor
 
 from utils.stabitily import nogueira
+
+warnings.filterwarnings("ignore")
 
 
 class CorrelationSelector:
@@ -60,7 +64,7 @@ def select_features(extracted_features: pd.DataFrame, target: pd.Series) -> Dict
     }
     embedded_methods = {
         "random_forest": SelectFromModel(estimator=RandomForestRegressor(n_estimators=100)),
-        "lasso l1": SelectFromModel(estimator=Lasso(alpha=1.5))
+        "lgbm": SelectFromModel(estimator=LGBMRegressor(n_estimators=100)),
     }
 
     res = {}
@@ -80,12 +84,13 @@ def test_stability(extracted_features: pd.DataFrame, target: pd.Series, n_iterat
         'correlation': [],
         'mutual_info': [],
         'random_forest': [],
-        'lasso l1': [],
+        'lgbm': [],
         'ensemble': []
     }
 
     for _ in tqdm(range(n_iterations)):
-        res = select_features(extracted_features.sample(1000), target.sample(1000))
+        rand = np.random.randint(0, int(len(extracted_features) / 1.5))
+        res = select_features(extracted_features[rand: rand + 900], target[rand: rand + 900])
         for method in stability_res.keys():
             stability_res[method].append(res[method])
 
