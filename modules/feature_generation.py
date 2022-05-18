@@ -4,7 +4,7 @@ from tsfresh.utilities.dataframe_functions import roll_time_series
 from tsfresh.utilities.dataframe_functions import impute
 
 
-def extract(timeseries: pd.DataFrame) -> (pd.DataFrame, pd.Series):
+def extract(timeseries: pd.DataFrame, max_timeshift: int, min_timeshift: int) -> (pd.DataFrame, pd.Series):
     """Extracts features from timeseries using tsfresh."""
     timeseries = timeseries.reset_index()
     timeseries.columns = ["date", "value"]
@@ -13,7 +13,7 @@ def extract(timeseries: pd.DataFrame) -> (pd.DataFrame, pd.Series):
     df_rolled = roll_time_series(
         timeseries,
         column_id="index", column_sort="date",
-        max_timeshift=20, min_timeshift=10
+        max_timeshift=max_timeshift, min_timeshift=min_timeshift
     )
 
     X = extract_features(
@@ -30,8 +30,8 @@ def extract(timeseries: pd.DataFrame) -> (pd.DataFrame, pd.Series):
     return X, y
 
 
-def generate_features(timeseries: pd.DataFrame) -> (pd.DataFrame, pd.Series):
+def generate_features(timeseries: pd.DataFrame, max_timeshift: int, min_timeshift: int) -> (pd.DataFrame, pd.Series):
     """Generates features from timeseries."""
-    X, y = extract(timeseries)
+    X, y = extract(timeseries, max_timeshift, min_timeshift)
     X = select_features(X, y)
     return X, y
