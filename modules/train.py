@@ -8,6 +8,25 @@ from sklearn.model_selection import train_test_split
 
 warnings.filterwarnings("ignore")
 
+def calc_pnl( y_true : pd.Series, pred : pd.Series) -> pd.Series:
+    
+    ts = y_true - pred
+    min_date = ts.index.min().strftime("%d.%m.%Y")
+    max_date = ts.index.max().strftime("%d.%m.%Y")
+
+    url =f'https://www.cbr.ru/hd_base/KeyRate/?UniDbQuery.Posted=True&UniDbQuery.From={min_date}&UniDbQuery.To={max_date}'
+    rates = pd.read_html(io=url)[0]
+
+    rates.columns = ['Date','key_rate']
+    rates.Date = rates.Date.apply(pd.Timestamp)
+    rates.set_index('Date',inplace = True)
+    rates['key_rate']/=1e4
+    result = pd.merge(ts, rates, left_index=True, right_index = True,how='left')
+    result['key_rate'].ffill(axis = 0,inplace = True)
+    result['pnl']=0
+    result.loc[ts>0,'pnl'] = ts[ts>0]*(result.loc[ts>0,'key_rate']-0.009)
+    result.loc[ts<0,'pnl'] = ts[ts<0]*(result.loc[ts<0,'key_rate']+0.01)
+    return result['pnl'].cumsum()
 
 def train_model(
         X: pd.DataFrame,
