@@ -128,3 +128,14 @@ def disorder_detection(ts: pd.Series, visualize: bool = False)  -> pd.Series :
         grid('on')
         
     return stat_trajectory
+
+def add_training_disorded(stat_trajectory):
+    count = 0
+    treshhold = 5   
+    for i in stat_trajectory[-3:]:
+        if i >= treshhold:
+            count = count + 1
+    if count >= 3:
+        return 'signal'
+    if count < 3:
+        return 'anomaly'
