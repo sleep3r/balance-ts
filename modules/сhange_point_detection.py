@@ -129,13 +129,14 @@ def detection_change_point(ts: pd.Series, visualize: bool = False)  -> pd.Series
         
     return stat_trajectory
 
-def add_training_change_point(stat_trajectory):
+def add_training_disorded(stat_trajectory):
     count = 0
-    treshhold = 5   
-    for i in stat_trajectory[-3:]:
+    treshhold = 5
+    count_back = 3
+    for i in stat_trajectory[-count_back:]:
         if i >= treshhold:
             count = count + 1
-    if count >= 3:
+    if count >= count_back:
         return 'signal'
-    if count < 3:
+    if count < count_back:
         return 'anomaly'
