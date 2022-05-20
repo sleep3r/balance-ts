@@ -78,7 +78,7 @@ class MeanExp(object):
             self._values_sum = 0.0
             self._weights_sum = 0.0
             
-def disorder_detection(ts: pd.Series, visualize: bool = False)  -> pd.Series :      
+def detection_change_point(ts: pd.Series, visualize: bool = False)  -> pd.Series :      
     alpha = 0.01
     beta = 0.05
     sigma_diff = 2.0
@@ -129,7 +129,7 @@ def disorder_detection(ts: pd.Series, visualize: bool = False)  -> pd.Series :
         
     return stat_trajectory
 
-def add_training_disorded(stat_trajectory):
+def add_training_change_point(stat_trajectory):
     count = 0
     treshhold = 5   
     for i in stat_trajectory[-3:]:
