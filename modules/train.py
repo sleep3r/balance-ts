@@ -24,8 +24,9 @@ def calc_pnl( y_true : pd.Series, pred : pd.Series) -> pd.Series:
     result = pd.merge(ts, rates, left_index=True, right_index = True,how='left')
     result['key_rate'].ffill(axis = 0,inplace = True)
     result['pnl']=0
-    result.loc[ts>0,'pnl'] = ts[ts>0]*(result.loc[ts>0,'key_rate']-0.009)
-    result.loc[ts<0,'pnl'] = ts[ts<0]*(result.loc[ts<0,'key_rate']+0.01)
+    result.loc[pred>0,'pnl'] += pred[pred>0] * (result.loc[pred>0,'key_rate'] + 0.005)
+    result.loc[ts>0,'pnl'] += ts[ts>0]*(result.loc[ts>0,'key_rate'] - 0.009)
+    result.loc[ts<0,'pnl'] += ts[ts<0]*(result.loc[ts<0,'key_rate'] + 0.01)
     return result['pnl'].cumsum()
 
 def train_model(
@@ -50,7 +51,6 @@ def train_model(
         eval_metric="mae",
         verbose=False
     )
-
     print("Best MAE:", mean_absolute_error(y_val, model.predict(X_val)))
 
     if visualize:
