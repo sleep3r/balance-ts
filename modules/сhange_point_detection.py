@@ -2,13 +2,14 @@ import numpy as np
 import pandas as pd
 from pylab import *
 
+
 class Stat(object):
     def __init__(self, threshold, direction="unknown", init_stat=0.0):
         self._direction = str(direction)
         self._threshold = float(threshold)
         self._stat = float(init_stat)
         self._alarm = self._stat / self._threshold
-    
+
     @property
     def direction(self):
         return self._direction
@@ -16,15 +17,15 @@ class Stat(object):
     @property
     def stat(self):
         return self._stat
-        
+
     @property
     def alarm(self):
         return self._alarm
-        
+
     @property
     def threshold(self):
         return self._threshold
-    
+
     def update(self, **kwargs):
         # Statistics may use any of the following kwargs:
         #   ts - timestamp for the value
@@ -34,6 +35,7 @@ class Stat(object):
         #   adjusted_value - usually (value - mean) / std
         # Statistics call this after updating '_stat'
         self._alarm = self._stat / self._threshold
+
 
 class AdjustedShiryaevRoberts(Stat):
     def __init__(self, mean_diff, threshold, max_stat=float("+inf"), init_stat=0.0):
@@ -47,7 +49,8 @@ class AdjustedShiryaevRoberts(Stat):
         likelihood = np.exp(self._mean_diff * (adjusted_value - self._mean_diff / 2.))
         self._stat = min(self._max_stat, (1. + self._stat) * likelihood)
         Stat.update(self)
-        
+
+
 class MeanExpNoDataException(Exception):
     pass
 
@@ -77,8 +80,9 @@ class MeanExp(object):
         else:
             self._values_sum = 0.0
             self._weights_sum = 0.0
-            
-def detection_change_point(ts: pd.Series, visualize: bool = False)  -> pd.Series :      
+
+
+def detection_change_point(ts: pd.Series, visualize: bool = False) -> pd.Series:
     alpha = 0.01
     beta = 0.05
     sigma_diff = 2.0
@@ -115,21 +119,21 @@ def detection_change_point(ts: pd.Series, visualize: bool = False)  -> pd.Series
         stat_trajectory.append(sr._stat)
         mean_values.append(mean_estimate)
         var_values.append(np.sqrt(var_estimate))
-        
+
     if visualize:
         figure(figsize=(12, 6))
         plot(values)
         plot(np.array(mean_values), 'k')
         plot(np.array(mean_values) + np.sqrt(var_values), 'k')
         plot(np.array(mean_values) - np.sqrt(var_values), 'k')
-       
+
         figure(figsize=(12, 6))
         fig = semilogy(stat_trajectory)
         grid('on')
-        
     return stat_trajectory
 
-def add_training_disorded(stat_trajectory):
+
+def add_training_change_point(stat_trajectory):
     count = 0
     treshhold = 5
     count_back = 3
