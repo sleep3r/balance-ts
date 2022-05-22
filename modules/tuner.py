@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 def objective(trial, X, y):
     param_grid = {
-        "n_estimators": trial.suggest_int("n_estimators", 100, 1000, step=50),
+        "n_estimators": trial.suggest_int("n_estimators", 100, 600, step=50),
         "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3),
         "num_leaves": trial.suggest_int("num_leaves", 10, 200, step=5),
         "max_depth": trial.suggest_int("max_depth", 3, 12),

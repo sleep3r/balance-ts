@@ -7,7 +7,7 @@ from tqdm import tqdm
 from mufs import MUFS
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.feature_selection import SelectFromModel, mutual_info_classif as MIC, RFECV
-from sklearn.linear_model import LinearRegression, Lasso
+from sklearn.linear_model import LinearRegression
 from lightgbm import LGBMRegressor
 
 from utils.stabitily import nogueira

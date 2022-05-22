@@ -1,9 +1,13 @@
+import warnings
+
 import numpy as np
 import pandas as pd
 import yfinance as yf
 from tsfresh import extract_features, select_features
 from tsfresh.utilities.dataframe_functions import roll_time_series
 from tsfresh.utilities.dataframe_functions import impute
+
+warnings.filterwarnings("ignore")
 
 
 def smoothing(series: pd.DataFrame, length):

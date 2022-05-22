@@ -55,7 +55,7 @@ def train_model(
     if visualize:
         plt.figure(figsize=(15, 8))
         plt.plot(y.values, label="Actual")
-        plt.plot(model.predict(X), label="Predicted")
+        plt.plot(model.predict(X), label="Predicted", alpha=0.9)
         plt.axvspan(int(len(X) * (1 - test_size)), len(X), alpha=0.5, color='lightgrey')
         plt.legend()
     return model
